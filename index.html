@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Leruo Motlhamme</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg:        #0a0a0a;
+      --surface:   #111111;
+      --gold:      #c9a96e;
+      --gold-dim:  #9b7c4e;
+      --white:     #f0ece4;
+      --muted:     #4a4a4a;
+      --border:    #1e1e1e;
+      --font-display: 'Cormorant Garamond', serif;
+      --font-mono:    'DM Mono', monospace;
+    }
+
+    html {
+      scroll-behavior: auto;
+      background: var(--bg);
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: var(--font-display);
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ── Custom cursor ── */
+    .cursor {
+      position: fixed;
+      top: 0; left: 0;
+      width: 8px; height: 8px;
+      background: var(--gold);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s ease, width 0.2s ease, height 0.2s ease, background 0.2s ease;
+    }
+    .cursor-ring {
+      position: fixed;
+      top: 0; left: 0;
+      width: 36px; height: 36px;
+      border: 1px solid var(--gold-dim);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: transform 0.12s ease, width 0.2s ease, height 0.2s ease, opacity 0.2s ease;
+      opacity: 0.6;
+    }
+
+    /* ── Noise overlay ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 100;
+      opacity: 0.35;
+    }
+
+    /* ── Thin top rule ── */
+    .top-rule {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      z-index: 50;
+    }
+
+    /* ── PANEL 1 — Hero ── */
+    #panel-hero {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 0 8vw;
+      overflow: hidden;
+    }
+
+    .hero-eyebrow {
+      font-family: var(--font-mono);
+      font-size: clamp(0.65rem, 1vw, 0.8rem);
+      letter-spacing: 0.3em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 2rem;
+      opacity: 0;
+    }
+
+    .hero-name {
+      font-size: clamp(3.5rem, 9vw, 9rem);
+      font-weight: 300;
+      line-height: 0.92;
+      letter-spacing: -0.02em;
+      color: var(--white);
+      opacity: 0;
+    }
+
+    .hero-name em {
+      font-style: italic;
+      color: var(--gold);
+    }
+
+    .hero-role {
+      margin-top: 2.5rem;
+      font-family: var(--font-mono);
+      font-size: clamp(0.7rem, 1.1vw, 0.9rem);
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      text-transform: uppercase;
+      opacity: 0;
+    }
+
+    .hero-role span {
+      color: var(--gold-dim);
+    }
+
+    /* Decorative vertical line */
+    .hero-line {
+      position: absolute;
+      right: 12vw;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      opacity: 0;
+    }
+    .hero-line__bar {
+      width: 1px;
+      height: 120px;
+      background: linear-gradient(to bottom, transparent, var(--gold), transparent);
+    }
+    .hero-line__label {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      color: var(--gold-dim);
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      text-transform: uppercase;
+    }
+
+    /* Scroll cue */
+    .scroll-cue {
+      position: absolute;
+      bottom: 3rem;
+      left: 8vw;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.25em;
+      color: var(--muted);
+      text-transform: uppercase;
+      opacity: 0;
+    }
+    .scroll-cue__line {
+      width: 40px;
+      height: 1px;
+      background: var(--muted);
+      transform-origin: left;
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+    @keyframes scrollPulse {
+      0%, 100% { transform: scaleX(1); opacity: 0.4; }
+      50%       { transform: scaleX(1.4); opacity: 1; }
+    }
+
+    /* ── PANEL 2 — Pinned "Get to know me" ── */
+    #pin-wrapper {
+      position: relative;
+    }
+
+    #panel-pin {
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pin-content {
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .pin-label {
+      font-family: var(--font-mono);
+      font-size: clamp(0.6rem, 0.9vw, 0.75rem);
+      letter-spacing: 0.4em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+    }
+
+    .pin-heading {
+      font-size: clamp(3rem, 8vw, 8rem);
+      font-weight: 300;
+      line-height: 1;
+      letter-spacing: -0.02em;
+    }
+
+    .pin-heading em {
+      font-style: italic;
+      color: var(--gold);
+    }
+
+    /* Big ghost text behind */
+    .pin-ghost {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(8rem, 22vw, 22rem);
+      font-weight: 600;
+      letter-spacing: -0.05em;
+      color: transparent;
+      -webkit-text-stroke: 1px var(--border);
+      pointer-events: none;
+      user-select: none;
+      z-index: 1;
+      opacity: 0.5;
+    }
+
+    /* Corner decorations */
+    .corner {
+      position: absolute;
+      width: 40px; height: 40px;
+      border-color: var(--gold-dim);
+      border-style: solid;
+      opacity: 0.4;
+    }
+    .corner--tl { top: 3rem; left: 3rem; border-width: 1px 0 0 1px; }
+    .corner--tr { top: 3rem; right: 3rem; border-width: 1px 1px 0 0; }
+    .corner--bl { bottom: 3rem; left: 3rem; border-width: 0 0 1px 1px; }
+    .corner--br { bottom: 3rem; right: 3rem; border-width: 0 1px 1px 0; }
+
+    /* ── PANEL 3 — About slide-in ── */
+    #panel-about {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--surface);
+      display: flex;
+      align-items: stretch;
+      z-index: 10;
+      transform: translateY(100%);
+      border-top: 1px solid var(--border);
+    }
+
+    .about-left {
+      width: 42%;
+      padding: 6vw 4vw 6vw 8vw;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border-right: 1px solid var(--border);
+      position: relative;
+    }
+
+    .about-left::after {
+      content: '';
+      position: absolute;
+      right: -1px; top: 20%; bottom: 20%;
+      width: 1px;
+      background: linear-gradient(to bottom, transparent, var(--gold), transparent);
+    }
+
+    .about-section-label {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.35em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 3rem;
+    }
+
+    .about-bio {
+      font-size: clamp(1.4rem, 2.5vw, 2.2rem);
+      font-weight: 300;
+      line-height: 1.4;
+      color: var(--white);
+    }
+
+    .about-bio strong {
+      font-weight: 600;
+      color: var(--gold);
+    }
+
+    .about-index {
+      margin-top: 3rem;
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      color: var(--muted);
+      letter-spacing: 0.2em;
+    }
+
+    .about-right {
+      width: 58%;
+      padding: 6vw 8vw 6vw 5vw;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 0;
+    }
+
+    .about-right-heading {
+      font-size: clamp(0.65rem, 0.9vw, 0.75rem);
+      font-family: var(--font-mono);
+      letter-spacing: 0.35em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 3rem;
+    }
+
+    .focus-item {
+      padding: 2rem 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      gap: 2rem;
+      opacity: 0;
+      transform: translateX(30px);
+    }
+
+    .focus-item:first-of-type {
+      border-top: 1px solid var(--border);
+    }
+
+    .focus-num {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--gold-dim);
+      letter-spacing: 0.1em;
+      padding-top: 0.3rem;
+      min-width: 2rem;
+    }
+
+    .focus-body {}
+
+    .focus-title {
+      font-size: clamp(1.1rem, 1.8vw, 1.5rem);
+      font-weight: 400;
+      color: var(--white);
+      margin-bottom: 0.5rem;
+    }
+
+    .focus-title em {
+      font-style: italic;
+      color: var(--gold);
+    }
+
+    .focus-desc {
+      font-family: var(--font-mono);
+      font-size: clamp(0.6rem, 0.85vw, 0.72rem);
+      color: var(--muted);
+      letter-spacing: 0.05em;
+      line-height: 1.7;
+    }
+
+    /* ── PANEL 4 — CTA / Footer ── */
+    #panel-cta {
+      width: 100%;
+      height: 100vh;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 4rem 8vw;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-ghost {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(6rem, 18vw, 18rem);
+      font-weight: 600;
+      color: transparent;
+      -webkit-text-stroke: 1px var(--border);
+      pointer-events: none;
+      user-select: none;
+      opacity: 0.4;
+    }
+
+    .cta-label {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.4em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 2rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .cta-heading {
+      font-size: clamp(2.5rem, 6vw, 6rem);
+      font-weight: 300;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      color: var(--white);
+      margin-bottom: 1.5rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .cta-heading em {
+      font-style: italic;
+      color: var(--gold);
+    }
+
+    .cta-sub {
+      font-family: var(--font-mono);
+      font-size: clamp(0.6rem, 0.9vw, 0.75rem);
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      margin-bottom: 3.5rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 2.5rem;
+      border: 1px solid var(--gold-dim);
+      color: var(--gold);
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      text-decoration: none;
+      position: relative;
+      z-index: 2;
+      transition: background 0.3s ease, color 0.3s ease;
+      cursor: none;
+    }
+
+    .cta-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--gold);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.35s cubic-bezier(0.76, 0, 0.24, 1);
+      z-index: -1;
+    }
+
+    .cta-btn:hover { color: var(--bg); }
+    .cta-btn:hover::before { transform: scaleX(1); }
+
+    .cta-footer {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: var(--font-mono);
+      font-size: 0.55rem;
+      letter-spacing: 0.3em;
+      color: var(--muted);
+      text-transform: uppercase;
+      z-index: 2;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      #panel-about {
+        flex-direction: column;
+      }
+      .about-left {
+        width: 100%;
+        padding: 4rem 6vw 2rem;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+      .about-left::after { display: none; }
+      .about-right {
+        width: 100%;
+        padding: 2rem 6vw 4rem;
+      }
+      .hero-line { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Cursor -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <div class="top-rule"></div>
+
+  <!-- ── Panel 1: Hero ── -->
+  <section id="panel-hero">
+    <p class="hero-eyebrow">Portfolio — 2025</p>
+    <h1 class="hero-name">
+      Leruo<br><em>Motlhamme</em>
+    </h1>
+    <p class="hero-role">
+      <span>Blockchain</span> / Web3 Developer &nbsp;·&nbsp;
+      <span>Smart Contracts</span> &nbsp;·&nbsp; UX/UI
+    </p>
+
+    <div class="hero-line">
+      <div class="hero-line__bar"></div>
+      <span class="hero-line__label">On Chain</span>
+      <div class="hero-line__bar"></div>
+    </div>
+
+    <div class="scroll-cue">
+      <div class="scroll-cue__line"></div>
+      Scroll to explore
+    </div>
+  </section>
+
+  <!-- ── Panel 2 (pin) + Panel 3 (slide-in) ── -->
+  <div id="pin-wrapper">
+    <section id="panel-pin">
+      <div class="pin-ghost">LM</div>
+      <div class="corner corner--tl"></div>
+      <div class="corner corner--tr"></div>
+      <div class="corner corner--bl"></div>
+      <div class="corner corner--br"></div>
+
+      <div class="pin-content">
+        <p class="pin-label">Chapter 02</p>
+        <h2 class="pin-heading">Get to<br><em>know me</em></h2>
+      </div>
+    </section>
+
+    <!-- Panel 3 slides in over panel 2 -->
+    <section id="panel-about">
+      <div class="about-left">
+        <p class="about-section-label">About</p>
+        <p class="about-bio">
+          Building the <strong>decentralised web</strong>, one smart contract at a time — with an eye for interfaces that feel as good as they function.
+        </p>
+        <p class="about-index">002 / 004</p>
+      </div>
+
+      <div class="about-right">
+        <p class="about-right-heading">What I work on</p>
+
+        <div class="focus-item">
+          <span class="focus-num">01</span>
+          <div class="focus-body">
+            <p class="focus-title"><em>Smart Contract</em> Development</p>
+            <p class="focus-desc">Solidity · Hardhat · Foundry · EVM architecture<br>Auditing, optimisation & gas efficiency</p>
+          </div>
+        </div>
+
+        <div class="focus-item">
+          <span class="focus-num">02</span>
+          <div class="focus-body">
+            <p class="focus-title">Web3 <em>Integration</em></p>
+            <p class="focus-desc">ethers.js · wagmi · viem · IPFS<br>Connecting on-chain logic to seamless frontends</p>
+          </div>
+        </div>
+
+        <div class="focus-item">
+          <span class="focus-num">03</span>
+          <div class="focus-body">
+            <p class="focus-title">UX / UI <em>Design</em></p>
+            <p class="focus-desc">Figma · design systems · motion design<br>Interfaces that make blockchain accessible</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ── Panel 4: CTA ── -->
+  <section id="panel-cta">
+    <div class="cta-ghost">LM</div>
+    <p class="cta-label">Chapter 04</p>
+    <h2 class="cta-heading">Let's build<br><em>something real</em></h2>
+    <p class="cta-sub">Open to collaborations, contracts &amp; conversations</p>
+    <a href="mailto:leruo@example.com" class="cta-btn">
+      <span>Get in touch</span>
+      <span>→</span>
+    </a>
+    <p class="cta-footer">Leruo Motlhamme &nbsp;·&nbsp; Blockchain / Web3 Developer</p>
+  </section>
+
+  <script>
+    gsap.registerPlugin(ScrollTrigger);
+
+    /* ── Cursor ── */
+    const cursor = document.getElementById('cursor');
+    const ring   = document.getElementById('cursorRing');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+    gsap.ticker.add(() => {
+      rx += (mx - rx) * 0.12;
+      ry += (my - ry) * 0.12;
+      gsap.set(cursor, { x: mx, y: my });
+      gsap.set(ring,   { x: rx, y: ry });
+    });
+
+    document.querySelectorAll('a, button').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        gsap.to(cursor, { width: 14, height: 14, duration: 0.2 });
+        gsap.to(ring,   { width: 56, height: 56, opacity: 0.3, duration: 0.2 });
+      });
+      el.addEventListener('mouseleave', () => {
+        gsap.to(cursor, { width: 8,  height: 8,  duration: 0.2 });
+        gsap.to(ring,   { width: 36, height: 36, opacity: 0.6, duration: 0.2 });
+      });
+    });
+
+    /* ── Panel 1: Hero entrance ── */
+    const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    heroTl
+      .to('.hero-eyebrow', { opacity: 1, y: 0, duration: 1, delay: 0.3 })
+      .fromTo('.hero-name',
+        { opacity: 0, y: 40, clipPath: 'inset(0 0 100% 0)' },
+        { opacity: 1, y: 0, clipPath: 'inset(0 0 0% 0)', duration: 1.1 }, '-=0.6')
+      .to('.hero-role',   { opacity: 1, y: 0, duration: 0.8 }, '-=0.5')
+      .to('.hero-line',   { opacity: 1, duration: 0.8 }, '-=0.4')
+      .to('.scroll-cue',  { opacity: 1, duration: 0.8 }, '-=0.3');
+
+    /* ── Pin panel-pin for the scroll distance ── */
+    ScrollTrigger.create({
+      trigger: '#pin-wrapper',
+      start: 'top top',
+      end: '+=150%',
+      pin: '#panel-pin',
+      pinSpacing: true,
+    });
+
+    /* ── Panel 3 slides up over the pinned panel 2 ── */
+    gsap.to('#panel-about', {
+      y: 0,
+      ease: 'power2.inOut',
+      scrollTrigger: {
+        trigger: '#pin-wrapper',
+        start: 'top top',
+        end: '+=150%',
+        scrub: 1,
+      }
+    });
+
+    /* ── Stagger the focus items once panel-about is in view ── */
+    gsap.to('.focus-item', {
+      opacity: 1,
+      x: 0,
+      stagger: 0.15,
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: '#panel-about',
+        start: 'top 80%',
+        toggleActions: 'play none none reverse',
+      }
+    });
+
+    /* ── Panel 4 CTA entrance ── */
+    gsap.fromTo('#panel-cta .cta-label, #panel-cta .cta-heading, #panel-cta .cta-sub, #panel-cta .cta-btn',
+      { opacity: 0, y: 30 },
+      {
+        opacity: 1, y: 0,
+        stagger: 0.12,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: '#panel-cta',
+          start: 'top 70%',
+          toggleActions: 'play none none reverse',
+        }
+      }
+    );
+  </script>
+</body>
+</html>
