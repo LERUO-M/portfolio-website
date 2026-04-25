@@ -71,6 +71,79 @@
       opacity: 0.6;
     }
 
+    /* ── Loader ── */
+    #loader {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 8vw;
+      pointer-events: none;
+    }
+
+    .loader-count {
+      font-family: var(--font-display);
+      font-size: clamp(5rem, 18vw, 16rem);
+      font-weight: 300;
+      line-height: 1;
+      color: var(--white);
+      letter-spacing: -0.03em;
+      display: flex;
+      align-items: baseline;
+      gap: 0.15em;
+    }
+
+    .loader-count__num {
+      display: inline-block;
+      min-width: 3ch;
+    }
+
+    .loader-count__pct {
+      font-size: 0.35em;
+      color: var(--gold);
+      font-family: var(--font-mono);
+      letter-spacing: 0.1em;
+    }
+
+    .loader-label {
+      font-family: var(--font-mono);
+      font-size: clamp(0.55rem, 0.9vw, 0.7rem);
+      letter-spacing: 0.4em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+    }
+
+    .loader-bar-track {
+      width: 100%;
+      height: 1px;
+      background: var(--border);
+      margin-top: 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .loader-bar-fill {
+      position: absolute;
+      top: 0; left: 0;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--gold-dim), var(--gold));
+    }
+
+    /* Slide-up exit: two panels */
+    .loader-panel {
+      position: absolute;
+      inset: 0;
+      background: var(--bg);
+    }
+    .loader-panel--right {
+      background: var(--surface);
+    }
+
     /* ── Noise overlay ── */
     body::before {
       content: '';
@@ -528,6 +601,19 @@
 </head>
 <body>
 
+  <!-- Loader -->
+  <div id="loader">
+    <div class="loader-panel loader-panel--right"></div>
+    <p class="loader-label">Loading</p>
+    <div class="loader-count">
+      <span class="loader-count__num" id="loaderNum">0</span>
+      <span class="loader-count__pct">%</span>
+    </div>
+    <div class="loader-bar-track">
+      <div class="loader-bar-fill" id="loaderBar"></div>
+    </div>
+  </div>
+
   <!-- Cursor -->
   <div class="cursor" id="cursor"></div>
   <div class="cursor-ring" id="cursorRing"></div>
@@ -536,18 +622,18 @@
 
   <!-- ── Panel 1: Hero ── -->
   <section id="panel-hero">
-    <p class="hero-eyebrow">Portfolio — 2025</p>
+    <p class="hero-eyebrow">Portfolio Website</p>
     <h1 class="hero-name">
       Leruo<br><em>Motlhamme</em>
     </h1>
     <p class="hero-role">
       <span>Blockchain</span> / Web3 Developer &nbsp;·&nbsp;
-      <span>Smart Contracts</span> &nbsp;·&nbsp; UX/UI
+      <span>Smart Contracts</span> &nbsp;·&nbsp; UX/UI enthusiast
     </p>
 
     <div class="hero-line">
       <div class="hero-line__bar"></div>
-      <span class="hero-line__label">On Chain</span>
+      <span class="hero-line__label">2026</span>
       <div class="hero-line__bar"></div>
     </div>
 
@@ -628,6 +714,46 @@
   <script>
     gsap.registerPlugin(ScrollTrigger);
 
+    /* ── Loader ── */
+    document.body.style.overflow = 'hidden';
+
+    const loaderNum = document.getElementById('loaderNum');
+    const loaderBar = document.getElementById('loaderBar');
+    const loader    = document.getElementById('loader');
+
+    const counter = { val: 0 };
+
+    const loaderTl = gsap.timeline({
+      onComplete: revealSite
+    });
+
+    // Count 0 → 100
+    loaderTl.to(counter, {
+      val: 100,
+      duration: 2.2,
+      ease: 'power1.inOut',
+      onUpdate() {
+        const v = Math.round(counter.val);
+        loaderNum.textContent = v;
+        loaderBar.style.width = v + '%';
+      }
+    });
+
+    // Brief pause at 100
+    loaderTl.to({}, { duration: 0.3 });
+
+    // Slide loader up and out (two-panel wipe)
+    loaderTl.to(loader, {
+      yPercent: -100,
+      duration: 1,
+      ease: 'power3.inOut',
+    });
+
+    function revealSite() {
+      document.body.style.overflow = '';
+      startHero();
+    }
+
     /* ── Cursor ── */
     const cursor = document.getElementById('cursor');
     const ring   = document.getElementById('cursorRing');
@@ -652,7 +778,8 @@
       });
     });
 
-    /* ── Panel 1: Hero entrance ── */
+    /* ── Panel 1: Hero entrance (called after loader) ── */
+    function startHero() {
     const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
     heroTl
       .to('.hero-eyebrow', { opacity: 1, y: 0, duration: 1, delay: 0.3 })
@@ -662,6 +789,7 @@
       .to('.hero-role',   { opacity: 1, y: 0, duration: 0.8 }, '-=0.5')
       .to('.hero-line',   { opacity: 1, duration: 0.8 }, '-=0.4')
       .to('.scroll-cue',  { opacity: 1, duration: 0.8 }, '-=0.3');
+    } // end startHero
 
     /* ── Pin panel-pin for the scroll distance ── */
     ScrollTrigger.create({
@@ -674,13 +802,15 @@
 
     /* ── Panel 3 slides up over the pinned panel 2 ── */
     gsap.to('#panel-about', {
-      y: 0,
-      ease: 'power2.inOut',
-      scrollTrigger: {
-        trigger: '#pin-wrapper',
-        start: 'top top',
-        end: '+=150%',
-        scrub: 1,
+        x: -100 * ('#panel-about').offsetWidth / window.innerWidth, // slide left by its own width
+        ease: 'power2.inOut',
+        scrollTrigger: {
+            trigger: '#pin-wrapper',
+            pin: true,
+            start: 'top top',
+            end: '+=150%',
+            scrub: 1,
+            snap: 1 
       }
     });
 

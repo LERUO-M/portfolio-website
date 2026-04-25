@@ -75,30 +75,7 @@ git push origin main
 # Go to: Settings → Pages → Source → Deploy from branch → main / root
 ```
 
-Your site will be live at `https://YOUR_USERNAME.github.io/portfolio-website/`
-
----
-
-## Customisation
-
-| What | Where in `index.html` |
-|------|----------------------|
-| Name & role | `#panel-hero` — `.hero-name`, `.hero-role` |
-| Bio text | `#panel-about` — `.about-bio` |
-| Focus areas | `.focus-item` blocks (×3) |
-| Contact email | `#panel-cta` — `href="mailto:..."` |
-| Colours | `:root` CSS variables |
-
-### Colour tokens
-
-```css
---gold:      #c9a96e   /* primary accent */
---gold-dim:  #9b7c4e   /* secondary / muted gold */
---bg:        #0a0a0a   /* page background */
---surface:   #111111   /* panel surface */
---white:     #f0ece4   /* body text */
---muted:     #4a4a4a   /* secondary text */
-```
+Your site will be live at `https://LERUO-M.github.io/portfolio-website/`
 
 ---
 
@@ -117,4 +94,4 @@ MIT — feel free to fork and make it your own.
 
 ---
 
-*Built by [Leruo Motlhamme](https://github.com/YOUR_USERNAME) · Blockchain / Web3 Developer*
+*Built by [Leruo Motlhamme](https://github.com/LERUO-M) · Blockchain / Web3 Developer*
