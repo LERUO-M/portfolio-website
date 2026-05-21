@@ -948,6 +948,36 @@
     .cta-btn:hover { color: var(--bg); }
     .cta-btn:hover::before { transform: scaleX(1); }
 
+    .cta-socials {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+      margin-top: 2rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .cta-social-link {
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.2rem;
+      transition: color 0.3s ease, border-color 0.3s ease;
+      cursor: none;
+    }
+
+    .cta-social-link:hover {
+      color: var(--gold);
+      border-color: var(--gold-dim);
+    }
+
     .cta-footer {
       position: absolute;
       bottom: 2.5rem;
@@ -1244,10 +1274,21 @@
     <p class="cta-label">Chapter 04</p>
     <h2 class="cta-heading">Let's build<br><em>something real</em></h2>
     <p class="cta-sub">Open to collaborations, contracts &amp; conversations</p>
-    <a href="https://www.linkedin.com/in/leruo-motlhamme-511a532a9/" class="cta-btn">
+    <a href="mailto:leruomotlhammedev@gmail.com" class="cta-btn">
       <span>Get in touch</span>
       <span>→</span>
     </a>
+    <div class="cta-socials">
+      <a href="https://github.com/LERUO-M" target="_blank" rel="noopener" class="cta-social-link">
+        <span>⌥</span> GitHub
+      </a>
+      <a href="https://www.linkedin.com/in/leruo-motlhamme-511a532a9/" target="_blank" rel="noopener" class="cta-social-link">
+        <span>↗</span> LinkedIn
+      </a>
+      <a href="mailto:leruomotlhammedev@gmail.com" class="cta-social-link">
+        <span>@</span> Email
+      </a>
+    </div>
     <p class="cta-footer">Leruo Motlhamme &nbsp;·&nbsp; Blockchain / Web3 Developer</p>
   </section>
 
