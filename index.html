@@ -343,26 +343,43 @@
     .corner--bl { bottom: 3rem; left: 3rem; border-width: 0 0 1px 1px; }
     .corner--br { bottom: 3rem; right: 3rem; border-width: 0 1px 1px 0; }
 
-    /* ── PANEL 3 — About slide-in ── */
-    #panel-about {
+    /* ── Horizontal scroll track (inside pin-wrapper) ── */
+    #horiz-track {
       position: absolute;
       top: 0; left: 0;
       width: 100%;
       height: 100%;
-      background: var(--surface);
       display: flex;
-      align-items: stretch;
+      will-change: transform;
       z-index: 10;
-      transform: translateY(100%);
-      border-top: 1px solid var(--border);
+      pointer-events: none; /* re-enabled via JS once in view */
+    }
+
+    /* ── Shared horizontal panel base ── */
+    .h-panel {
+      min-width: 100vw;
+      width: 100vw;
+      height: 100vh;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      border-left: 1px solid var(--border);
+      pointer-events: auto;
+    }
+
+    /* ── PANEL A — About me ── */
+    #h-about {
+      background: var(--surface);
+      padding: 0 8vw;
+      gap: 6vw;
     }
 
     .about-left {
-      width: 42%;
-      padding: 6vw 4vw 6vw 8vw;
+      flex: 0 0 38%;
       display: flex;
       flex-direction: column;
       justify-content: center;
+      padding-right: 4vw;
       border-right: 1px solid var(--border);
       position: relative;
     }
@@ -370,7 +387,7 @@
     .about-left::after {
       content: '';
       position: absolute;
-      right: -1px; top: 20%; bottom: 20%;
+      right: -1px; top: 15%; bottom: 15%;
       width: 1px;
       background: linear-gradient(to bottom, transparent, var(--gold), transparent);
     }
@@ -381,13 +398,22 @@
       letter-spacing: 0.35em;
       color: var(--gold);
       text-transform: uppercase;
-      margin-bottom: 3rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .about-chapter {
+      font-family: var(--font-mono);
+      font-size: 0.55rem;
+      letter-spacing: 0.3em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
     }
 
     .about-bio {
-      font-size: clamp(1.4rem, 2.5vw, 2.2rem);
+      font-size: clamp(1.4rem, 2.2vw, 2rem);
       font-weight: 300;
-      line-height: 1.4;
+      line-height: 1.45;
       color: var(--white);
     }
 
@@ -404,54 +430,109 @@
       letter-spacing: 0.2em;
     }
 
-    .about-right {
-      width: 58%;
-      padding: 6vw 8vw 6vw 5vw;
+    .about-right-col {
+      flex: 1;
       display: flex;
       flex-direction: column;
       justify-content: center;
+      padding-left: 2vw;
+    }
+
+    .about-tagline {
+      font-size: clamp(2rem, 4.5vw, 4.5rem);
+      font-weight: 300;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: var(--white);
+      margin-bottom: 2.5rem;
+    }
+
+    .about-tagline em {
+      font-style: italic;
+      color: var(--gold);
+    }
+
+    .about-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .about-tag {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+      border: 1px solid var(--border);
+      padding: 0.5rem 1rem;
+    }
+
+    /* ── PANEL B — What I work on ── */
+    #h-work {
+      background: var(--bg);
+      flex-direction: column;
+      justify-content: center;
+      padding: 0 8vw;
       gap: 0;
     }
 
-    .about-right-heading {
-      font-size: clamp(0.65rem, 0.9vw, 0.75rem);
+    .work-heading-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 4rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 2rem;
+    }
+
+    .work-heading {
+      font-size: clamp(2rem, 5vw, 5rem);
+      font-weight: 300;
+      letter-spacing: -0.02em;
+    }
+
+    .work-heading em { font-style: italic; color: var(--gold); }
+
+    .work-chapter {
       font-family: var(--font-mono);
-      letter-spacing: 0.35em;
-      color: var(--gold);
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      color: var(--muted);
       text-transform: uppercase;
-      margin-bottom: 3rem;
+    }
+
+    .focus-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
     }
 
     .focus-item {
-      padding: 2rem 0;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: flex-start;
-      gap: 2rem;
+      padding: 2.5rem 3rem 2.5rem 0;
+      border-right: 1px solid var(--border);
       opacity: 0;
-      transform: translateX(30px);
+      transform: translateY(20px);
     }
 
-    .focus-item:first-of-type {
-      border-top: 1px solid var(--border);
-    }
+    .focus-item:last-child { border-right: none; padding-right: 0; }
+    .focus-item:not(:first-child) { padding-left: 3rem; }
 
     .focus-num {
       font-family: var(--font-mono);
-      font-size: 0.65rem;
+      font-size: 0.6rem;
       color: var(--gold-dim);
-      letter-spacing: 0.1em;
-      padding-top: 0.3rem;
-      min-width: 2rem;
+      letter-spacing: 0.15em;
+      margin-bottom: 1.5rem;
+      display: block;
     }
 
-    .focus-body {}
-
     .focus-title {
-      font-size: clamp(1.1rem, 1.8vw, 1.5rem);
-      font-weight: 400;
+      font-size: clamp(1.1rem, 1.8vw, 1.6rem);
+      font-weight: 300;
       color: var(--white);
-      margin-bottom: 0.5rem;
+      margin-bottom: 1rem;
+      line-height: 1.2;
     }
 
     .focus-title em {
@@ -461,13 +542,314 @@
 
     .focus-desc {
       font-family: var(--font-mono);
-      font-size: clamp(0.6rem, 0.85vw, 0.72rem);
+      font-size: clamp(0.58rem, 0.8vw, 0.7rem);
       color: var(--muted);
       letter-spacing: 0.05em;
-      line-height: 1.7;
+      line-height: 1.8;
     }
 
-    /* ── PANEL 4 — CTA / Footer ── */
+    /* Slide indicator dots */
+    .slide-dots {
+      position: absolute;
+      bottom: 3rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 0.6rem;
+      z-index: 20;
+    }
+
+    .slide-dot {
+      width: 4px; height: 4px;
+      border-radius: 50%;
+      background: var(--muted);
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+
+    .slide-dot.active {
+      background: var(--gold);
+      transform: scale(1.4);
+    }
+
+    /* Swipe hint on mobile */
+    .swipe-hint {
+      position: absolute;
+      bottom: 3rem;
+      right: 8vw;
+      font-family: var(--font-mono);
+      font-size: 0.55rem;
+      letter-spacing: 0.3em;
+      color: var(--muted);
+      text-transform: uppercase;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* ── PANEL 3 — Projects ── */
+    #proj-wrapper {
+      position: relative;
+    }
+
+    #proj-pin {
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--surface);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Ghost text */
+    .proj-ghost {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(6rem, 18vw, 18rem);
+      font-weight: 600;
+      color: transparent;
+      -webkit-text-stroke: 1px var(--border);
+      pointer-events: none;
+      user-select: none;
+      opacity: 0.4;
+      letter-spacing: -0.05em;
+    }
+
+    .proj-intro-content {
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .proj-intro-label {
+      font-family: var(--font-mono);
+      font-size: clamp(0.6rem, 0.9vw, 0.75rem);
+      letter-spacing: 0.4em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+    }
+
+    .proj-intro-heading {
+      font-size: clamp(2.8rem, 7vw, 7rem);
+      font-weight: 300;
+      line-height: 1;
+      letter-spacing: -0.02em;
+    }
+
+    .proj-intro-heading em {
+      font-style: italic;
+      color: var(--gold);
+    }
+
+    /* Horizontal project track */
+    #proj-track {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      will-change: transform;
+      z-index: 10;
+    }
+
+    /* Individual project slide */
+    .proj-panel {
+      min-width: 100vw;
+      width: 100vw;
+      height: 100vh;
+      flex-shrink: 0;
+      display: flex;
+      align-items: stretch;
+      background: var(--bg);
+      border-left: 1px solid var(--border);
+    }
+
+    /* Left: screenshot */
+    .proj-visual {
+      width: 52%;
+      position: relative;
+      overflow: hidden;
+      border-right: 1px solid var(--border);
+      background: var(--surface);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .proj-screenshot {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      opacity: 0.85;
+      transition: opacity 0.4s ease;
+    }
+
+    .proj-screenshot:hover { opacity: 1; }
+
+    /* Placeholder shown when no real screenshot */
+    .proj-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+      background: var(--surface);
+    }
+
+    .proj-placeholder__label {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .proj-placeholder__name {
+      font-size: clamp(1.5rem, 3vw, 3rem);
+      font-weight: 300;
+      color: var(--border);
+      letter-spacing: -0.02em;
+      text-align: center;
+      padding: 0 2rem;
+    }
+
+    /* Screenshot overlay number */
+    .proj-visual__num {
+      position: absolute;
+      top: 2rem;
+      left: 2rem;
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      color: var(--gold-dim);
+      text-transform: uppercase;
+    }
+
+    /* Right: info */
+    .proj-info {
+      width: 48%;
+      padding: 0 6vw;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 0;
+    }
+
+    .proj-chapter {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.35em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 2rem;
+    }
+
+    .proj-name {
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      font-weight: 300;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin-bottom: 2rem;
+    }
+
+    .proj-name em { font-style: italic; color: var(--gold); }
+
+    .proj-desc {
+      font-family: var(--font-mono);
+      font-size: clamp(0.62rem, 0.9vw, 0.75rem);
+      color: var(--muted);
+      line-height: 1.9;
+      letter-spacing: 0.04em;
+      margin-bottom: 3rem;
+      max-width: 38ch;
+    }
+
+    .proj-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-bottom: 3rem;
+    }
+
+    .proj-tag {
+      font-family: var(--font-mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+      border: 1px solid var(--border);
+      padding: 0.4rem 0.85rem;
+    }
+
+    .proj-links {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+    }
+
+    .proj-link {
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      position: relative;
+      cursor: none;
+    }
+
+    .proj-link--live {
+      color: var(--gold);
+      border-bottom: 1px solid var(--gold-dim);
+      padding-bottom: 0.2rem;
+    }
+
+    .proj-link--gh {
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.2rem;
+      transition: color 0.3s ease;
+    }
+
+    .proj-link--gh:hover { color: var(--white); }
+
+    /* Proj dot indicators */
+    #proj-dots {
+      position: absolute;
+      bottom: 3rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 0.6rem;
+      z-index: 20;
+    }
+
+    .proj-dot {
+      width: 4px; height: 4px;
+      border-radius: 50%;
+      background: var(--muted);
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+
+    .proj-dot.active {
+      background: var(--gold);
+      transform: scale(1.4);
+    }
+
+    /* Corner decorations reused */
+    #proj-pin .corner { z-index: 15; }
     #panel-cta {
       width: 100%;
       height: 100vh;
@@ -581,20 +963,12 @@
 
     /* ── Responsive ── */
     @media (max-width: 768px) {
-      #panel-about {
-        flex-direction: column;
-      }
-      .about-left {
-        width: 100%;
-        padding: 4rem 6vw 2rem;
-        border-right: none;
-        border-bottom: 1px solid var(--border);
-      }
+      .focus-grid { grid-template-columns: 1fr; }
+      .focus-item { border-right: none; border-bottom: 1px solid var(--border); padding: 2rem 0; }
+      .focus-item:not(:first-child) { padding-left: 0; }
+      #h-about { flex-direction: column; padding: 4rem 6vw; gap: 3rem; }
+      .about-left { flex: none; width: 100%; border-right: none; border-bottom: 1px solid var(--border); padding-right: 0; padding-bottom: 2rem; }
       .about-left::after { display: none; }
-      .about-right {
-        width: 100%;
-        padding: 2rem 6vw 4rem;
-      }
       .hero-line { display: none; }
     }
   </style>
@@ -628,7 +1002,7 @@
     </h1>
     <p class="hero-role">
       <span>Blockchain</span> / Web3 Developer &nbsp;·&nbsp;
-      <span>Smart Contracts</span> &nbsp;·&nbsp; UX/UI enthusiast
+      <span>Smart Contract Engineer</span> &nbsp;·&nbsp; UX/UI Enthusiast
     </p>
 
     <div class="hero-line">
@@ -643,7 +1017,7 @@
     </div>
   </section>
 
-  <!-- ── Panel 2 (pin) + Panel 3 (slide-in) ── -->
+  <!-- ── Panel 2 (pin) + Horizontal panels ── -->
   <div id="pin-wrapper">
     <section id="panel-pin">
       <div class="pin-ghost">LM</div>
@@ -656,45 +1030,200 @@
         <p class="pin-label">Chapter 02</p>
         <h2 class="pin-heading">Get to<br><em>know me</em></h2>
       </div>
+
+      <!-- Horizontal track lives inside pinned panel -->
+      <div id="horiz-track">
+
+        <!-- Slide A: About me -->
+        <div class="h-panel" id="h-about">
+          <div class="about-left">
+            <p class="about-chapter">Chapter 02 — A</p>
+            <p class="about-section-label">About me</p>
+            <p class="about-bio">
+              Will use the <strong>SEAT</strong> method to write this bio.
+            </p>
+            <p class="about-index">01 / 02</p>
+          </div>
+          <div class="about-right-col">
+            <h3 class="about-tagline">On-chain logic.<br><em>Human</em> design.</h3>
+            <div class="about-tags">
+              <span class="about-tag">Solidity</span>
+              <span class="about-tag">ethers.js</span>
+              <span class="about-tag">Hardhat and JavaScript</span>
+              <span class="about-tag">DeFi</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide B: What I work on -->
+        <div class="h-panel" id="h-work">
+          <div class="work-heading-row">
+            <h3 class="work-heading">What I <em>work on</em></h3>
+            <span class="work-chapter">Chapter 02 — B &nbsp;·&nbsp; 02 / 02</span>
+          </div>
+          <div class="focus-grid">
+            <div class="focus-item">
+              <span class="focus-num">01</span>
+              <p class="focus-title"><em>Smart Contract</em> Development</p>
+              <p class="focus-desc">Solidity · Hardhat · Foundry · EVM<br>Auditing, optimisation & gas efficiency</p>
+            </div>
+            <div class="focus-item">
+              <span class="focus-num">02</span>
+              <p class="focus-title">Web3 <em>Integration</em></p>
+              <p class="focus-desc">ethers.js · wagmi · viem · IPFS<br>Bridging on-chain logic to seamless UIs</p>
+            </div>
+            <div class="focus-item">
+              <span class="focus-num">03</span>
+              <p class="focus-title">UX / UI <em>Design</em></p>
+              <p class="focus-desc">Figma · design systems · motion<br>Making blockchain feel human</p>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /horiz-track -->
+
+      <!-- Dot indicators -->
+      <div class="slide-dots">
+        <div class="slide-dot active" id="dot0"></div>
+        <div class="slide-dot" id="dot1"></div>
+      </div>
+
+      <!-- Swipe / scroll hint -->
+      <div class="swipe-hint" id="swipeHint">
+        <span>→</span> scroll to explore
+      </div>
+
     </section>
+  </div>
 
-    <!-- Panel 3 slides in over panel 2 -->
-    <section id="panel-about">
-      <div class="about-left">
-        <p class="about-section-label">About</p>
-        <p class="about-bio">
-          Building the <strong>decentralised web</strong>, one smart contract at a time — with an eye for interfaces that feel as good as they function.
-        </p>
-        <p class="about-index">002 / 004</p>
+  <!-- ── Panel 3: Projects ── -->
+  <div id="proj-wrapper">
+    <section id="proj-pin">
+      <div class="proj-ghost">WORK</div>
+      <div class="corner corner--tl"></div>
+      <div class="corner corner--tr"></div>
+      <div class="corner corner--bl"></div>
+      <div class="corner corner--br"></div>
+
+      <!-- Intro slide (visible before track scrolls in) -->
+      <div class="proj-intro-content">
+        <p class="proj-intro-label">Chapter 03</p>
+        <h2 class="proj-intro-heading">Projects I<br>have <em>built</em></h2>
       </div>
 
-      <div class="about-right">
-        <p class="about-right-heading">What I work on</p>
+      <!-- Horizontal project track -->
+      <div id="proj-track">
 
-        <div class="focus-item">
-          <span class="focus-num">01</span>
-          <div class="focus-body">
-            <p class="focus-title"><em>Smart Contract</em> Development</p>
-            <p class="focus-desc">Solidity · Hardhat · Foundry · EVM architecture<br>Auditing, optimisation & gas efficiency</p>
+        <!-- Project 01: Sweepstake Pool -->
+        <div class="proj-panel">
+          <div class="proj-visual">
+            <img src="./screenshots/sweepstake.png" alt="Sweepstake Pool" class="proj-screenshot" />
+            <span class="proj-visual__num">01 / 03</span>
+          </div>
+          <div class="proj-info">
+            <p class="proj-chapter">Chapter 03 &nbsp;·&nbsp; Project 01</p>
+            <h3 class="proj-name">Sweepstake<br><em>Pool</em></h3>
+            <p class="proj-desc">
+              A decentralised Ethereum lottery where users deposit ETH for a proportional
+              chance to win the pool. Chainlink Automation monitors the contract and triggers
+              a draw once the interval elapses. Chainlink VRF then selects a verifiably
+              random winner — no admin control, no manipulation. Rewards transfer automatically
+              and the pool resets for the next round.
+            </p>
+            <div class="proj-stack">
+              <span class="proj-tag">Solidity</span>
+              <span class="proj-tag">Chainlink VRF</span>
+              <span class="proj-tag">Chainlink Automation</span>
+              <span class="proj-tag">React</span>
+              <span class="proj-tag">ethers.js</span>
+              <span class="proj-tag">Vite</span>
+            </div>
+            <div class="proj-links">
+              <a href="https://neon-gumdrop-cfb7a9.netlify.app/" target="_blank" rel="noopener" class="proj-link proj-link--live">
+                <span>↗</span> Live demo
+              </a>
+              <a href="https://github.com/LERUO-M/SWEEPSTAKE_POOL" target="_blank" rel="noopener" class="proj-link proj-link--gh">
+                <span>⌥</span> GitHub
+              </a>
+            </div>
           </div>
         </div>
 
-        <div class="focus-item">
-          <span class="focus-num">02</span>
-          <div class="focus-body">
-            <p class="focus-title">Web3 <em>Integration</em></p>
-            <p class="focus-desc">ethers.js · wagmi · viem · IPFS<br>Connecting on-chain logic to seamless frontends</p>
+        <!-- Project 02: UbuntuHealth Vault -->
+        <div class="proj-panel">
+          <div class="proj-visual">
+            <img src="./screenshots/ubuntuhealth.png" alt="UbuntuHealth Vault" class="proj-screenshot" />
+            <span class="proj-visual__num">02 / 03</span>
+          </div>
+          <div class="proj-info">
+            <p class="proj-chapter">Chapter 03 &nbsp;·&nbsp; Project 02</p>
+            <h3 class="proj-name">Ubuntu<br><em>Health Vault</em></h3>
+            <p class="proj-desc">
+              A patient-owned medical records platform built on Ubuntu's philosophy of
+              collective care. Users store, manage and share their health data securely —
+              giving individuals full sovereignty over who sees their records and when,
+              without relying on centralised institutions.
+            </p>
+            <div class="proj-stack">
+              <span class="proj-tag">Next.js</span>
+              <span class="proj-tag">TypeScript</span>
+              <span class="proj-tag">Tailwind CSS</span>
+            </div>
+            <div class="proj-links">
+              <a href="https://ubuntuhealth.vercel.app/" target="_blank" rel="noopener" class="proj-link proj-link--live">
+                <span>↗</span> Live demo
+              </a>
+              <a href="https://github.com/LERUO-M/UbuntuHealth-Vault" target="_blank" rel="noopener" class="proj-link proj-link--gh">
+                <span>⌥</span> GitHub
+              </a>
+            </div>
           </div>
         </div>
 
-        <div class="focus-item">
-          <span class="focus-num">03</span>
-          <div class="focus-body">
-            <p class="focus-title">UX / UI <em>Design</em></p>
-            <p class="focus-desc">Figma · design systems · motion design<br>Interfaces that make blockchain accessible</p>
+        <!-- Project 03: P2P Marketplace -->
+        <div class="proj-panel">
+          <div class="proj-visual">
+            <img src="./screenshots/escrow.png" alt="P2P Marketplace" class="proj-screenshot" />
+            <span class="proj-visual__num">03 / 03</span>
+          </div>
+          <div class="proj-info">
+            <p class="proj-chapter">Chapter 03 &nbsp;·&nbsp; Project 03</p>
+            <h3 class="proj-name">P2P <em>Marketplace</em></h3>
+            <p class="proj-desc">
+              A trustless peer-to-peer marketplace powered by on-chain escrow. Buyers lock
+              funds into a smart contract on purchase; the seller only receives payment once
+              the buyer confirms delivery — no middlemen, no custodial risk. Dispute logic
+              and fund release are handled entirely by the contract, keeping every transaction
+              transparent and tamper-proof. This currently runs on ETH Sepolia testnet using USDC 
+              - 0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238 (token address)
+            </p>
+            <div class="proj-stack">
+              <span class="proj-tag">Solidity</span>
+              <span class="proj-tag">Escrow</span>
+              <span class="proj-tag">React</span>
+              <span class="proj-tag">ethers.js</span>
+              <span class="proj-tag">Vite</span>
+            </div>
+            <div class="proj-links">
+              <a href="https://lm-marketplace.netlify.app/" target="_blank" rel="noopener" class="proj-link proj-link--live">
+                <span>↗</span> Live demo
+              </a>
+              <a href="https://github.com/Africas-Blockchain-Club/Leruo-Motlhamme/tree/main/P2P%20System" target="_blank" rel="noopener" class="proj-link proj-link--gh">
+                <span>⌥</span> GitHub
+              </a>
+            </div>
           </div>
         </div>
+
+      </div><!-- /proj-track -->
+
+      <!-- Dot indicators -->
+      <div id="proj-dots">
+        <div class="proj-dot active" id="pdot0"></div>
+        <div class="proj-dot" id="pdot1"></div>
+        <div class="proj-dot" id="pdot2"></div>
       </div>
+
     </section>
   </div>
 
@@ -704,7 +1233,7 @@
     <p class="cta-label">Chapter 04</p>
     <h2 class="cta-heading">Let's build<br><em>something real</em></h2>
     <p class="cta-sub">Open to collaborations, contracts &amp; conversations</p>
-    <a href="mailto:leruo@example.com" class="cta-btn">
+    <a href="https://www.linkedin.com/in/leruo-motlhamme-511a532a9/" class="cta-btn">
       <span>Get in touch</span>
       <span>→</span>
     </a>
@@ -720,14 +1249,10 @@
     const loaderNum = document.getElementById('loaderNum');
     const loaderBar = document.getElementById('loaderBar');
     const loader    = document.getElementById('loader');
+    const counter   = { val: 0 };
 
-    const counter = { val: 0 };
+    const loaderTl = gsap.timeline({ onComplete: revealSite });
 
-    const loaderTl = gsap.timeline({
-      onComplete: revealSite
-    });
-
-    // Count 0 → 100
     loaderTl.to(counter, {
       val: 100,
       duration: 2.2,
@@ -738,16 +1263,8 @@
         loaderBar.style.width = v + '%';
       }
     });
-
-    // Brief pause at 100
     loaderTl.to({}, { duration: 0.3 });
-
-    // Slide loader up and out (two-panel wipe)
-    loaderTl.to(loader, {
-      yPercent: -100,
-      duration: 1,
-      ease: 'power3.inOut',
-    });
+    loaderTl.to(loader, { yPercent: -100, duration: 1, ease: 'power3.inOut' });
 
     function revealSite() {
       document.body.style.overflow = '';
@@ -773,62 +1290,108 @@
         gsap.to(ring,   { width: 56, height: 56, opacity: 0.3, duration: 0.2 });
       });
       el.addEventListener('mouseleave', () => {
-        gsap.to(cursor, { width: 8,  height: 8,  duration: 0.2 });
+        gsap.to(cursor, { width: 8, height: 8, duration: 0.2 });
         gsap.to(ring,   { width: 36, height: 36, opacity: 0.6, duration: 0.2 });
       });
     });
 
-    /* ── Panel 1: Hero entrance (called after loader) ── */
+    /* ── Hero entrance ── */
     function startHero() {
-    const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-    heroTl
-      .to('.hero-eyebrow', { opacity: 1, y: 0, duration: 1, delay: 0.3 })
-      .fromTo('.hero-name',
-        { opacity: 0, y: 40, clipPath: 'inset(0 0 100% 0)' },
-        { opacity: 1, y: 0, clipPath: 'inset(0 0 0% 0)', duration: 1.1 }, '-=0.6')
-      .to('.hero-role',   { opacity: 1, y: 0, duration: 0.8 }, '-=0.5')
-      .to('.hero-line',   { opacity: 1, duration: 0.8 }, '-=0.4')
-      .to('.scroll-cue',  { opacity: 1, duration: 0.8 }, '-=0.3');
-    } // end startHero
+      const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+      heroTl
+        .to('.hero-eyebrow', { opacity: 1, y: 0, duration: 1, delay: 0.3 })
+        .fromTo('.hero-name',
+          { opacity: 0, y: 40, clipPath: 'inset(0 0 100% 0)' },
+          { opacity: 1, y: 0, clipPath: 'inset(0 0 0% 0)', duration: 1.1 }, '-=0.6')
+        .to('.hero-role',  { opacity: 1, y: 0, duration: 0.8 }, '-=0.5')
+        .to('.hero-line',  { opacity: 1, duration: 0.8 }, '-=0.4')
+        .to('.scroll-cue', { opacity: 1, duration: 0.8 }, '-=0.3');
+    }
 
-    /* ── Pin panel-pin for the scroll distance ── */
-    ScrollTrigger.create({
+    /* ── Horizontal scroll inside pinned panel ── */
+    const track     = document.getElementById('horiz-track');
+    const panels    = gsap.utils.toArray('.h-panel');        // 2 panels
+    const dot0      = document.getElementById('dot0');
+    const dot1      = document.getElementById('dot1');
+    const swipeHint = document.getElementById('swipeHint');
+
+    // Total horizontal distance = number of extra panels × 100vw
+    const totalShift = (panels.length - 1) * 100; // 100vw in %
+
+    // Pin the wrapper for long enough to scroll through all horizontal panels
+    // Each extra panel needs 100vh of scroll room; add 50vh for the intro pause
+    const pinDuration = `+=${(panels.length - 1) * 100 + 50}%`;
+
+    const horizST = ScrollTrigger.create({
       trigger: '#pin-wrapper',
       start: 'top top',
-      end: '+=150%',
+      end: pinDuration,
       pin: '#panel-pin',
       pinSpacing: true,
-    });
+      scrub: false,               // we drive it manually below
+      onUpdate(self) {
+        // Map overall pin progress (0→1) to horizontal panels
+        // First ~25% of scroll = intro pause on "Get to know me"
+        // Remaining 75% drives horizontal movement
+        const raw      = self.progress;
+        const shifted  = Math.max(0, (raw - 0.25) / 0.75); // 0→1 after intro
+        const snapped  = Math.round(shifted);               // 0 or 1 (snap)
 
-    /* ── Panel 3 slides up over the pinned panel 2 ── */
-    gsap.to('#panel-about', {
-        x: -100 * ('#panel-about').offsetWidth / window.innerWidth, // slide left by its own width
-        ease: 'power2.inOut',
-        scrollTrigger: {
-            trigger: '#pin-wrapper',
-            pin: true,
-            start: 'top top',
-            end: '+=150%',
-            scrub: 1,
-            snap: 1 
+        // Smooth translation
+        const xPct = shifted * -totalShift;
+        gsap.to(track, { x: xPct + 'vw', duration: 0.6, ease: 'power2.out', overwrite: true });
+
+        // Dot indicators
+        const activeIdx = Math.round(shifted * (panels.length - 1));
+        dot0.classList.toggle('active', activeIdx === 0);
+        dot1.classList.toggle('active', activeIdx === 1);
+
+        // Fade swipe hint out after first panel
+        gsap.to(swipeHint, { opacity: shifted > 0.05 ? 0 : 1, duration: 0.4 });
+
+        // Stagger focus items when work panel comes into view
+        if (shifted > 0.7) {
+          gsap.to('.focus-item', {
+            opacity: 1, y: 0,
+            stagger: 0.1,
+            duration: 0.6,
+            ease: 'power2.out',
+            overwrite: 'auto'
+          });
+        }
       }
     });
 
-    /* ── Stagger the focus items once panel-about is in view ── */
-    gsap.to('.focus-item', {
-      opacity: 1,
-      x: 0,
-      stagger: 0.15,
-      ease: 'power2.out',
-      scrollTrigger: {
-        trigger: '#panel-about',
-        start: 'top 80%',
-        toggleActions: 'play none none reverse',
+    /* ── Projects horizontal scroll ── */
+    const projTrack   = document.getElementById('proj-track');
+    const projPanels  = gsap.utils.toArray('.proj-panel');
+    const projDots    = document.querySelectorAll('.proj-dot');
+    const projTotal   = (projPanels.length - 1) * 100;
+    const projPinEnd  = `+=${projPanels.length * 100}%`;
+
+    ScrollTrigger.create({
+      trigger: '#proj-wrapper',
+      start: 'top top',
+      end: projPinEnd,
+      pin: '#proj-pin',
+      pinSpacing: true,
+      onUpdate(self) {
+        // First 25% = intro pause; rest drives horizontal
+        const raw     = self.progress;
+        const shifted = Math.max(0, (raw - 0.25) / 0.75);
+        const xPct    = shifted * -projTotal;
+
+        gsap.to(projTrack, { x: xPct + 'vw', duration: 0.55, ease: 'power2.out', overwrite: true });
+
+        // Update dots
+        const activeIdx = Math.round(shifted * (projPanels.length - 1));
+        projDots.forEach((d, i) => d.classList.toggle('active', i === activeIdx));
       }
     });
 
     /* ── Panel 4 CTA entrance ── */
-    gsap.fromTo('#panel-cta .cta-label, #panel-cta .cta-heading, #panel-cta .cta-sub, #panel-cta .cta-btn',
+    gsap.fromTo(
+      '#panel-cta .cta-label, #panel-cta .cta-heading, #panel-cta .cta-sub, #panel-cta .cta-btn',
       { opacity: 0, y: 30 },
       {
         opacity: 1, y: 0,
